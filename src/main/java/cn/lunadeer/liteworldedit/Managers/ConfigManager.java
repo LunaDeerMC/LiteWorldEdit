@@ -19,7 +19,7 @@ public class ConfigManager {
         _multiplier = _file.getInt("Multiplier", 1);
         _drop_items = _file.getBoolean("DropItems", false);
         _check_update = _file.getBoolean("CheckUpdate", true);
-        _decline_money = _file.getInt("DeclineMoney", 0);
+        _decline_money = _file.getDouble("DeclineMoney", 0);
         _plugin.saveConfig();
     }
 
@@ -53,16 +53,13 @@ public class ConfigManager {
         return _multiplier;
     }
 
-    public Integer getDeclineMoney() {
+    public double getDeclineMoney() {
         return _decline_money;
     }
 
     // 为EconomyManager使用的项目
     public Boolean isEconomyEnabled() {
-        if (_decline_money > 0) {
-            return true;
-        }
-        return false;
+        return _decline_money > 0;
     }
 
     public void setDropItems(Boolean drop_items) {
@@ -102,5 +99,5 @@ public class ConfigManager {
 
     private Boolean _check_update;
 
-    private Integer _decline_money;
+    private Double _decline_money;
 }
