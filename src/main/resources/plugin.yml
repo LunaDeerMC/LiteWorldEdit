@@ -2,10 +2,12 @@ name: LiteWorldEdit
 version: '${project.version}'
 main: cn.lunadeer.liteworldedit.LiteWorldEdit
 api-version: 1.14
+softdepend:
+  - Vault
 prefix: LWE
 load: STARTUP
-authors: [ Luming ]
-description: 生存用简易创世神。
+authors: [ Luming, Googee ]
+description: 生存用简易创世神，已修改为支持Valut经济插件。
 website: https://ssl.lunadeer.cn:14448/project-2/
 folia-supported: true
 commands:

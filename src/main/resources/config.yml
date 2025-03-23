@@ -11,3 +11,5 @@ DropItems: false
 CheckUpdate: true
 
 Debug: false
+
+DeclineMoney: 0

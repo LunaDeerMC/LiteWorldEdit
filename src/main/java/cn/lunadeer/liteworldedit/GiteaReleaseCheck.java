@@ -50,6 +50,9 @@ public class GiteaReleaseCheck {
     }
 
     private void getLatestRelease() {
+        // 改版警告
+        LoggerX.warn("警告，这是一个改版！更新检查部分并未进行修改！如果你希望使用改版功能请前往正确的地址手动检查更新！");
+        LoggerX.warn("本改版地址：https://github.com/plox3770/LiteWorldEdit-VaultSupported");
         LoggerX.info("================================");
         LoggerX.info("正在检查更新...");
         // send get request to repoReleases()

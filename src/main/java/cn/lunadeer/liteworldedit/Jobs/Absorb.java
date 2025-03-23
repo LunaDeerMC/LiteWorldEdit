@@ -1,5 +1,6 @@
 package cn.lunadeer.liteworldedit.Jobs;
 
+import cn.lunadeer.liteworldedit.LiteWorldEdit;
 import cn.lunadeer.liteworldedit.LoggerX;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -47,12 +48,25 @@ public class Absorb extends Job {
         if (pickaxe == null) {
             return JobErrCode.NOT_ENOUGH_DURATION;
         }
+        // 检查货币消耗
+        if (LiteWorldEdit.instance.getConfigMgr().isEconomyEnabled()) {
+            if (!LiteWorldEdit.instance.getEconomyMgr().isEconomyExist()) {
+                return JobErrCode.NO_ECONOMY_PROVIDER;
+            }
+            if (LiteWorldEdit.instance.getEconomyMgr().getBalance(_creator) < LiteWorldEdit.instance.getConfigMgr().getDeclineMoney()) {
+                return JobErrCode.NOT_ENOUGH_MONEY;
+            }
+        }
         if (!event.isCancelled()) {
             raw_block.setType(Material.SPONGE);
             raw_block.setType(Material.AIR);
             // 损坏镐
             if (!_creator.isOp() && _creator.getGameMode() != GameMode.CREATIVE) {
                 useNetherPickaxe(pickaxe);
+            }
+            // 消耗货币
+            if (!_creator.isOp() && LiteWorldEdit.instance.getConfigMgr().isEconomyEnabled()) {
+                LiteWorldEdit.instance.getEconomyMgr().withdrawPlayer(_creator, LiteWorldEdit.instance.getConfigMgr().getDeclineMoney());
             }
             return JobErrCode.OK;
         } else {

@@ -104,6 +104,7 @@ public class Commands implements TabExecutor {
                 Notification.error(player, "你没有权限。");
             } else {
                 LiteWorldEdit.config.reload();
+                LiteWorldEdit.economy.recheck();
                 Notification.info(player, "已重载配置文件。");
             }
         } else {
