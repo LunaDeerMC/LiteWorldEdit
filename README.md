@@ -6,6 +6,7 @@
 ### [开源地址](https://ssl.lunadeer.cn:14446/zhangyuheng/LiteWorldEdit) | [文档地址](https://ssl.lunadeer.cn:14448/doc/3/)
 ### [下载页面](https://ssl.lunadeer.cn:14446/zhangyuheng/LiteWorldEdit/releases)
 ### [统计页面](https://bstats.org/plugin/bukkit/LiteWorldEdit/21436) | [Hangar](https://hangar.papermc.io/zhangyuheng/LiteWorldEdit)
+### [修改版开源地址](https://github.com/plox3770/LiteWorldEdit-VaultSupported)
 
 </div>
 
