@@ -2,6 +2,7 @@ package cn.lunadeer.liteworldedit;
 
 import cn.lunadeer.liteworldedit.Managers.Cache;
 import cn.lunadeer.liteworldedit.Managers.ConfigManager;
+import cn.lunadeer.liteworldedit.Managers.EconomyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,6 +15,7 @@ public final class LiteWorldEdit extends JavaPlugin {
         // Plugin startup logic
         instance = this;
         config = new ConfigManager();
+        economy = new EconomyManager();
         _cache = new Cache();
 
         Bukkit.getPluginManager().registerEvents(new Events(), this);
@@ -30,6 +32,9 @@ public final class LiteWorldEdit extends JavaPlugin {
 
         LoggerX.info("LiteWorldEdit 已加载");
         LoggerX.info("版本: " + getPluginMeta().getVersion());
+        // 改版警告
+        LoggerX.warn("警告，这是一个改版！");
+        LoggerX.warn("本改版地址：https://github.com/plox3770/LiteWorldEdit-VaultSupported");
         LoggerX.info("");
         // https://patorjk.com/software/taag/#p=display&f=Big&t=LiteWorldEdit
         LoggerX.info(" _      _ _    __          __        _     _ ______    _ _ _   ");
@@ -51,12 +56,17 @@ public final class LiteWorldEdit extends JavaPlugin {
         return config;
     }
 
+    public EconomyManager getEconomyMgr() {
+        return economy;
+    }
+
     public Cache getCache() {
         return _cache;
     }
 
     public static LiteWorldEdit instance;
     public static ConfigManager config;
+    public static EconomyManager economy;
     private Cache _cache;
     private GiteaReleaseCheck giteaReleaseCheck;
 }

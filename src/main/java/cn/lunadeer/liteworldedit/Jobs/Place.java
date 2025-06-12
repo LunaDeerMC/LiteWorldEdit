@@ -1,5 +1,6 @@
 package cn.lunadeer.liteworldedit.Jobs;
 
+import cn.lunadeer.liteworldedit.LiteWorldEdit;
 import cn.lunadeer.liteworldedit.LoggerX;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -58,6 +59,15 @@ public class Place extends Job {
             LoggerX.debug("物品中没有该材料！");
             return JobErrCode.NOT_ENOUGH_ITEMS;
         }
+        // 检查货币消耗
+        if (LiteWorldEdit.instance.getConfigMgr().isEconomyEnabled()) {
+            if (!LiteWorldEdit.instance.getEconomyMgr().isEconomyExist()) {
+                return JobErrCode.NO_ECONOMY_PROVIDER;
+            }
+            if (LiteWorldEdit.instance.getEconomyMgr().getBalance(_creator) < LiteWorldEdit.instance.getConfigMgr().getDeclineMoney()) {
+                return JobErrCode.NOT_ENOUGH_MONEY;
+            }
+        }
 
         Block block = _world.getBlockAt(raw_block.getX() + 1, raw_block.getY(), raw_block.getZ());
         // 校验是否可以放置
@@ -74,6 +84,10 @@ public class Place extends Job {
             raw_block.setType(_block);
             if (!_creator.isOp() && _creator.getGameMode() != GameMode.CREATIVE) {
                 stack.setAmount(stack.getAmount() - 1);
+            }
+            // 消耗货币
+            if (!_creator.isOp() && LiteWorldEdit.instance.getConfigMgr().isEconomyEnabled()) {
+                LiteWorldEdit.instance.getEconomyMgr().withdrawPlayer(_creator, LiteWorldEdit.instance.getConfigMgr().getDeclineMoney());
             }
             return JobErrCode.OK;
         } else {

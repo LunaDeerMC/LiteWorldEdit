@@ -6,6 +6,7 @@
 ### [开源地址](https://ssl.lunadeer.cn:14446/zhangyuheng/LiteWorldEdit) | [文档地址](https://ssl.lunadeer.cn:14448/doc/3/)
 ### [下载页面](https://ssl.lunadeer.cn:14446/zhangyuheng/LiteWorldEdit/releases)
 ### [统计页面](https://bstats.org/plugin/bukkit/LiteWorldEdit/21436) | [Hangar](https://hangar.papermc.io/zhangyuheng/LiteWorldEdit)
+### [修改版开源地址](https://github.com/plox3770/LiteWorldEdit-VaultSupported)
 
 </div>
 
@@ -39,6 +40,8 @@
 8. 支持设置是否产生掉落物；
 9. 支持设置速度倍率（整数，默认1表示每tick操作一个方块，设置为2则每次操作两个方块）
 10. 选区可视
+
+> 修改：支持设置消耗耐久/方块的同时消耗服务器货币。
 
 ## 支持版本
 
@@ -79,6 +82,11 @@
 
 默认为 false，如果开启则 `empty` 等清理方块的操作会像普通挖掘那样生成掉落物。建议不开启，避免滥用此功能挖矿或短时间内产生大量掉落物品造成服务器卡顿。
 
+> ### DeclineMoney
+> 此为修改版添加的配置  
+> 默认为0，表示每次操作方块消耗的金额。  
+> 数字小于或等于0时禁用。
+
 ## 指令
 
 以下指令尖括号`<>`表示必填参数，方括号`[]`表示可选参数。
@@ -110,6 +118,8 @@
 
 ## 配置文件参考
 
+> `DeclineMoney`为修改版添加的配置
+
 ```yaml
 MaxX: 64
 
@@ -122,6 +132,8 @@ DropItems: false
 Multiplier: 1
 
 CheckUpdate: true
+
+DeclineMoney: 0
 
 Debug: false
 ```

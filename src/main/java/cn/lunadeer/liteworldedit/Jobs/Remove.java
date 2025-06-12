@@ -43,6 +43,16 @@ public class Remove extends Job {
         if (pickaxe == null) {
             return JobErrCode.NOT_ENOUGH_DURATION;
         }
+        // 检查货币消耗
+        if (LiteWorldEdit.instance.getConfigMgr().isEconomyEnabled()) {
+             if (!LiteWorldEdit.instance.getEconomyMgr().isEconomyExist()) {
+                 return JobErrCode.NO_ECONOMY_PROVIDER;
+             }
+             if (LiteWorldEdit.instance.getEconomyMgr().getBalance(_creator) < LiteWorldEdit.instance.getConfigMgr().getDeclineMoney()) {
+                 return JobErrCode.NOT_ENOUGH_MONEY;
+             }
+        }
+
         BlockBreakEvent event = new BlockBreakEvent(raw_block, _creator);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
@@ -56,6 +66,10 @@ public class Remove extends Job {
             // 损坏镐
             if (!_creator.isOp() && _creator.getGameMode() != GameMode.CREATIVE) {
                 useNetherPickaxe(pickaxe);
+            }
+            // 消耗货币
+            if (!_creator.isOp() && LiteWorldEdit.instance.getConfigMgr().isEconomyEnabled()) {
+                LiteWorldEdit.instance.getEconomyMgr().withdrawPlayer(_creator, LiteWorldEdit.instance.getConfigMgr().getDeclineMoney());
             }
             return JobErrCode.OK;
         } else {
