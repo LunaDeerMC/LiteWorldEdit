@@ -1,7 +1,7 @@
 package cn.lunadeer.liteworldedit.Jobs;
 
-import cn.lunadeer.liteworldedit.LoggerX;
-import cn.lunadeer.liteworldedit.Notification;
+import cn.lunadeer.liteworldedit.utils.Notification;
+import cn.lunadeer.liteworldedit.utils.XLogger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -14,55 +14,52 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 
-public class Job {
-    private final World _world;
-    private final Location _location;
-    private final Long _time;
-    private final Player _creator;
-    private final Inventory _inventory;
+public abstract class Job {
+    private final World world;
+    private final Location location;
+    private final Long time;
+    private final Player creator;
+    private final Inventory inventory;
 
-    public Long get_time() {
-        return _time;
+    public Long getTime() {
+        return time;
     }
 
-    public Player get_creator() {
-        return _creator;
+    public Player getCreator() {
+        return creator;
     }
 
-    public Inventory get_inventory() {
-        return _inventory;
+    public Inventory getInventory() {
+        return inventory;
     }
 
-    public Location get_location() {
-        return _location;
+    public Location getLocation() {
+        return location;
     }
 
-    public World get_world() {
-        return _world;
+    public World getWorld() {
+        return world;
     }
 
     public Job(World world, Location location, Player player) {
-        _world = world;
-        _location = location;
-        _creator = player;
-        _time = System.currentTimeMillis();
-        _inventory = player.getInventory();
+        this.world = world;
+        this.location = location;
+        creator = player;
+        time = System.currentTimeMillis();
+        inventory = player.getInventory();
     }
 
-    public JobErrCode Do() {
-        // nothing
-        return JobErrCode.OK;
-    }
+    public abstract JobErrCode execution();
 
-    static public Boolean in_range(Player player, Location location) {
+    public static boolean notInRange(Player player, Location location) {
         if (!player.getWorld().getName().equals(location.getWorld().getName())) {
-            return false;
+            return true;
         }
         if (player.getLocation().distance(location) > 128) {
             Notification.error(player, "不允许超过128格操作！");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static HashMap<Integer, ?> getNetherPickaxes(Player player) {
@@ -71,29 +68,27 @@ public class Job {
     }
 
     public static ItemStack getUsableNetherPickaxe(HashMap<Integer, ?> pickaxes, Player player) {
-        Inventory _inventory = player.getInventory();
         ItemStack pickaxe = null;
         Damageable pickaxe_damage = null;
         for (Integer index : pickaxes.keySet()) {
-            ItemStack p = _inventory.getItem(index);
+            ItemStack p = player.getInventory().getItem(index);
             if (p == null) {
-                LoggerX.debug(index + " 获取到的下界合金镐为空！");
+                XLogger.debug("{0} 获取到的下界合金镐为空！", index);
                 continue;
             }
             ItemMeta pickaxe_meta = p.getItemMeta();
             if (pickaxe_meta == null) {
-                LoggerX.debug(index + " 获取到的下界合金镐元数据为空！");
+                XLogger.debug("{0} 获取到的下界合金镐元数据为空！", index);
                 continue;
             }
             if (!(pickaxe_meta instanceof Damageable)) {
-                LoggerX.debug(index + " 无法转换为Damageable！");
+                XLogger.debug("{0} 无法转换为Damageable！", index);
                 continue;
             }
-            // 如果耐久小于10，提示玩家
             pickaxe_damage = (Damageable) pickaxe_meta;
             if (!pickaxe_meta.isUnbreakable()) {
                 if (pickaxe_damage.getDamage() >= 2031 - 10) {
-                    LoggerX.debug(index + " 下界合金镐耐久太低！");
+                    XLogger.debug("{0} 下界合金镐耐久太低！", index);
                     continue;
                 }
             }
@@ -108,11 +103,9 @@ public class Job {
         double random = Math.random();
         Damageable pickaxe_damage = (Damageable) pickaxe.getItemMeta();
         if (pickaxe_damage.isUnbreakable()) {
-            // 无限耐久则不损坏
             return pickaxe;
         }
         if (random < 1.0 / (durability + 1)) {
-            // 扣除耐久
             pickaxe_damage.setDamage(pickaxe_damage.getDamage() + 1);
             pickaxe.setItemMeta(pickaxe_damage);
         }

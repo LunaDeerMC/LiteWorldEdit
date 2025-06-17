@@ -1,14 +1,14 @@
-package cn.lunadeer.liteworldedit;
+package cn.lunadeer.liteworldedit.Managers;
 
 import cn.lunadeer.liteworldedit.Jobs.Job;
-import cn.lunadeer.liteworldedit.Managers.JobQueue;
-import cn.lunadeer.liteworldedit.Managers.Point;
+import cn.lunadeer.liteworldedit.Task;
+import cn.lunadeer.liteworldedit.utils.Notification;
+import cn.lunadeer.liteworldedit.utils.scheduler.Scheduler;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static cn.lunadeer.liteworldedit.SchedulerUtil.runAtFixedRateEntity;
 
 public class XPlayer {
 
@@ -16,15 +16,14 @@ public class XPlayer {
     private final Map<Integer, Point> points;
     private final Player player;
     private final JobQueue queue;
-    private final Task task;
 
     public XPlayer(Player player) {
         Notification.info(player, "当前选点模式: 关闭");
         this.player = player;
         this.points = new HashMap<>();
         this.queue = new JobQueue(player);
-        this.task = new Task(this);
-        runAtFixedRateEntity(player, LiteWorldEdit.instance, task, 1);
+        Task task = new Task(this);
+        Scheduler.runTaskRepeatAsync(task, 1, 1);
     }
 
     public boolean isSelectMode() {

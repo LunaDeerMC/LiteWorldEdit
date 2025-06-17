@@ -1,6 +1,6 @@
 package cn.lunadeer.liteworldedit.Jobs;
 
-import cn.lunadeer.liteworldedit.LoggerX;
+import cn.lunadeer.liteworldedit.utils.XLogger;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
@@ -23,56 +23,52 @@ public class Place extends Job {
     }
 
     @Override
-    public JobErrCode Do() {
-        Player _creator = this.get_creator();
-        Location _location = this.get_location();
-        World _world = this.get_world();
-        Inventory _inventory = this.get_inventory();
+    public JobErrCode execution() {
         // 超出距离
-        if (!in_range(_creator, _location)) {
-            LoggerX.debug("超出距离！");
+        if (notInRange(getCreator(), getLocation())) {
+            XLogger.debug("超出距离！");
             return JobErrCode.OUT_OF_RANGE;
         }
         // 跳过非空气方块
-        Block raw_block = _world.getBlockAt(_location);
+        Block raw_block = this.getWorld().getBlockAt(getLocation());
         if (!raw_block.isEmpty()) {
-            LoggerX.debug("目标方块不是空气！");
+            XLogger.debug("目标方块不是空气！");
             return JobErrCode.NOT_AIR_BLOCK;
         }
         // 获取到玩家物品中材料的第一个堆叠
         ItemStack stack;
-        int stack_index = _inventory.first(_block);
+        int stack_index = getInventory().first(_block);
         if (stack_index == -1) {
             // 物品栏没有就去潜影盒里找
             if (!moveBlockFromShulkerBoxToInv()) {
                 return JobErrCode.NOT_ENOUGH_ITEMS;
             }
-            stack_index = _inventory.first(_block);
+            stack_index = getInventory().first(_block);
             if (stack_index == -1) {
-                LoggerX.debug("物品中没有该材料！");
+                XLogger.debug("物品中没有该材料！");
                 return JobErrCode.NOT_ENOUGH_ITEMS;
             }
         }
-        stack = _inventory.getItem(stack_index);
+        stack = getInventory().getItem(stack_index);
         if (stack == null) {
-            LoggerX.debug("物品中没有该材料！");
+            XLogger.debug("物品中没有该材料！");
             return JobErrCode.NOT_ENOUGH_ITEMS;
         }
 
-        Block block = _world.getBlockAt(raw_block.getX() + 1, raw_block.getY(), raw_block.getZ());
+        Block block = this.getWorld().getBlockAt(raw_block.getX() + 1, raw_block.getY(), raw_block.getZ());
         // 校验是否可以放置
         BlockPlaceEvent event = new BlockPlaceEvent(
                 block,
                 raw_block.getState(),
                 block,
                 stack,
-                _creator,
+                getCreator(),
                 true,
-                EquipmentSlot.valueOf("HAND"));
+                EquipmentSlot.HAND);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
             raw_block.setType(_block);
-            if (!_creator.isOp() && _creator.getGameMode() != GameMode.CREATIVE) {
+            if (!getCreator().isOp() && getCreator().getGameMode() != GameMode.CREATIVE) {
                 stack.setAmount(stack.getAmount() - 1);
             }
             return JobErrCode.OK;
@@ -82,60 +78,29 @@ public class Place extends Job {
     }
 
     private boolean moveBlockFromShulkerBoxToInv() {
-        Inventory _inventory = this.get_inventory();
-        HashMap<Integer, ItemStack> shulkerBoxes = new HashMap<>();
-        HashMap<Integer, ? extends ItemStack> plainShulkerBoxes = _inventory.all(Material.SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> whiteShulkerBoxes = _inventory.all(Material.WHITE_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> orangeShulkerBoxes = _inventory.all(Material.ORANGE_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> magentaShulkerBoxes = _inventory.all(Material.MAGENTA_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> lightBlueShulkerBoxes = _inventory.all(Material.LIGHT_BLUE_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> yellowShulkerBoxes = _inventory.all(Material.YELLOW_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> limeShulkerBoxes = _inventory.all(Material.LIME_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> pinkShulkerBoxes = _inventory.all(Material.PINK_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> grayShulkerBoxes = _inventory.all(Material.GRAY_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> lightGrayShulkerBoxes = _inventory.all(Material.LIGHT_GRAY_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> cyanShulkerBoxes = _inventory.all(Material.CYAN_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> purpleShulkerBoxes = _inventory.all(Material.PURPLE_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> blueShulkerBoxes = _inventory.all(Material.BLUE_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> brownShulkerBoxes = _inventory.all(Material.BROWN_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> greenShulkerBoxes = _inventory.all(Material.GREEN_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> redShulkerBoxes = _inventory.all(Material.RED_SHULKER_BOX);
-        HashMap<Integer, ? extends ItemStack> blackShulkerBoxes = _inventory.all(Material.BLACK_SHULKER_BOX);
+        HashMap<Integer, ItemStack> boxes = new HashMap<>();
+        int idx = 0;
+        for (ItemStack item : getInventory().getContents()) {
+            if (item != null && Tag.SHULKER_BOXES.isTagged(item.getType())) {
+                boxes.put(idx, item);
+            }
+            idx++;
+        }
 
-        shulkerBoxes.putAll(plainShulkerBoxes);
-        shulkerBoxes.putAll(whiteShulkerBoxes);
-        shulkerBoxes.putAll(orangeShulkerBoxes);
-        shulkerBoxes.putAll(magentaShulkerBoxes);
-        shulkerBoxes.putAll(lightBlueShulkerBoxes);
-        shulkerBoxes.putAll(yellowShulkerBoxes);
-        shulkerBoxes.putAll(limeShulkerBoxes);
-        shulkerBoxes.putAll(pinkShulkerBoxes);
-        shulkerBoxes.putAll(grayShulkerBoxes);
-        shulkerBoxes.putAll(lightGrayShulkerBoxes);
-        shulkerBoxes.putAll(cyanShulkerBoxes);
-        shulkerBoxes.putAll(purpleShulkerBoxes);
-        shulkerBoxes.putAll(blueShulkerBoxes);
-        shulkerBoxes.putAll(brownShulkerBoxes);
-        shulkerBoxes.putAll(greenShulkerBoxes);
-        shulkerBoxes.putAll(redShulkerBoxes);
-        shulkerBoxes.putAll(blackShulkerBoxes);
-
-        for (Integer index : shulkerBoxes.keySet()) {
-            LoggerX.debug("找到潜影盒：" + index);
-            ItemStack itemStack = _inventory.getItem(index);
+        for (Integer index : boxes.keySet()) {
+            XLogger.debug("找到潜影盒：" + index);
+            ItemStack itemStack = getInventory().getItem(index);
             if (itemStack == null) {
                 continue;
             }
-            if (!(itemStack.getItemMeta() instanceof BlockStateMeta)) {
-                LoggerX.debug("不是BlockStateMeta！");
+            if (!(itemStack.getItemMeta() instanceof BlockStateMeta meta)) {
+                XLogger.debug("不是BlockStateMeta！");
                 continue;
             }
-            BlockStateMeta meta = (BlockStateMeta) itemStack.getItemMeta();
-            if (!(meta.getBlockState() instanceof ShulkerBox)) {
-                LoggerX.debug("不是潜影盒！");
+            if (!(meta.getBlockState() instanceof ShulkerBox shulkerBox)) {
+                XLogger.debug("不是潜影盒！");
                 continue;
             }
-            ShulkerBox shulkerBox = (ShulkerBox) meta.getBlockState();
             Inventory boxInv = shulkerBox.getInventory();
             int item_idx = boxInv.first(_block);
             if (item_idx == -1) {
@@ -146,7 +111,7 @@ public class Place extends Job {
                 continue;
             }
             // 把物品放到玩家物品栏
-            _inventory.addItem(i);
+            getInventory().addItem(i);
             // 把潜影盒中的物品移除
             shulkerBox.getInventory().setItem(item_idx, null);
             // 更新潜影盒
@@ -154,7 +119,6 @@ public class Place extends Job {
             itemStack.setItemMeta(meta);
             return true;
         }
-        LoggerX.debug("潜影盒中没有该材料！");
         return false;
     }
 }

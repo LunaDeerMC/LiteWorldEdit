@@ -1,7 +1,10 @@
 package cn.lunadeer.liteworldedit.Jobs;
 
-import cn.lunadeer.liteworldedit.LoggerX;
-import org.bukkit.*;
+import cn.lunadeer.liteworldedit.utils.XLogger;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -15,34 +18,31 @@ public class Absorb extends Job {
     }
 
     @Override
-    public JobErrCode Do() {
-        Player _creator = this.get_creator();
-        Location _location = this.get_location();
-        World _world = this.get_world();
+    public JobErrCode execution() {
         // 超出距离
-        if (!in_range(_creator, _location)) {
-            LoggerX.debug("超出距离！");
+        if (notInRange(this.getCreator(), this.getLocation())) {
+            XLogger.debug("超出距离！");
             return JobErrCode.OUT_OF_RANGE;
         }
-        Block raw_block = _world.getBlockAt(_location);
+        Block raw_block = this.getWorld().getBlockAt(this.getLocation());
         // 跳过非流体
         if (!raw_block.isLiquid()) {
-            LoggerX.debug("目标方块不是流体！");
+            XLogger.debug("目标方块不是流体！");
             return JobErrCode.NOT_LIQUID;
         }
-        HashMap<Integer, ?> sponge = _creator.getInventory().all(Material.SPONGE);
-        if (sponge.size() == 0) {
+        HashMap<Integer, ?> sponge = this.getCreator().getInventory().all(Material.SPONGE);
+        if (sponge.isEmpty()) {
             return JobErrCode.NO_SPONGE;
         }
         // 模拟海绵吸水事件
-        BlockPlaceEvent event = new BlockPlaceEvent(raw_block, raw_block.getState(), raw_block, new ItemStack(Material.SPONGE), _creator, true, null);
+        BlockPlaceEvent event = new BlockPlaceEvent(raw_block, raw_block.getState(), raw_block, new ItemStack(Material.SPONGE), this.getCreator(), true);
         Bukkit.getPluginManager().callEvent(event);
         // 获取玩家背包中的下届合金镐
-        HashMap<Integer, ?> pickaxes = getNetherPickaxes(_creator);
-        if (pickaxes.size() == 0) {
+        HashMap<Integer, ?> pickaxes = getNetherPickaxes(this.getCreator());
+        if (pickaxes.isEmpty()) {
             return JobErrCode.NO_PICKAXE;
         }
-        ItemStack pickaxe = getUsableNetherPickaxe(pickaxes, _creator);
+        ItemStack pickaxe = getUsableNetherPickaxe(pickaxes, this.getCreator());
         // 没有合适的镐
         if (pickaxe == null) {
             return JobErrCode.NOT_ENOUGH_DURATION;
@@ -51,7 +51,7 @@ public class Absorb extends Job {
             raw_block.setType(Material.SPONGE);
             raw_block.setType(Material.AIR);
             // 损坏镐
-            if (!_creator.isOp() && _creator.getGameMode() != GameMode.CREATIVE) {
+            if (!this.getCreator().isOp() && this.getCreator().getGameMode() != GameMode.CREATIVE) {
                 useNetherPickaxe(pickaxe);
             }
             return JobErrCode.OK;

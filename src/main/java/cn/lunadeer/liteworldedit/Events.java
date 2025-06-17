@@ -1,6 +1,10 @@
 package cn.lunadeer.liteworldedit;
 
+import cn.lunadeer.liteworldedit.Managers.Cache;
 import cn.lunadeer.liteworldedit.Managers.Point;
+import cn.lunadeer.liteworldedit.Managers.XPlayer;
+import cn.lunadeer.liteworldedit.utils.Notification;
+import cn.lunadeer.liteworldedit.utils.ParticleRender;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -16,17 +20,17 @@ import org.bukkit.inventory.ItemStack;
 public class Events implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        LiteWorldEdit.instance.getCache().playerQuit(event.getPlayer());
+        Cache.getInstance().playerQuit(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        LiteWorldEdit.instance.getCache().playerJoin(event.getPlayer());
+        Cache.getInstance().playerJoin(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void selectPoint(PlayerInteractEvent event) {
-        XPlayer xplayer = LiteWorldEdit.instance.getCache().getPlayer(event.getPlayer());
+        XPlayer xplayer = Cache.getInstance().getPlayer(event.getPlayer());
         if (!xplayer.isSelectMode()) {
             return;
         }
@@ -48,11 +52,11 @@ public class Events implements Listener {
 
         if (action == Action.LEFT_CLICK_BLOCK) {
             event.setCancelled(true);
-            Notification.info(player, "已选择第一个点: " + x + " " + y + " " + z);
+            Notification.info(player, "已选择第一个点: {0} {1} {2}", x, y, z);
             xplayer.addPoint(1, point);
         } else if (action == Action.RIGHT_CLICK_BLOCK) {
             event.setCancelled(true);
-            Notification.info(player, "已选择第二个点: " + x + " " + y + " " + z);
+            Notification.info(player, "已选择第二个点: {0} {1} {2}", x, y, z);
             xplayer.addPoint(2, point);
         }
 
@@ -62,7 +66,7 @@ public class Events implements Listener {
             int deltaX = Math.abs(p1.x - p2.x);
             int deltaY = Math.abs(p1.y - p2.y);
             int deltaZ = Math.abs(p1.z - p2.z);
-            if (deltaX > LiteWorldEdit.config.getXMax() || deltaY > LiteWorldEdit.config.getYMax() || deltaZ > LiteWorldEdit.config.getZMax()) {
+            if (deltaX > Configuration.maximumSize.x || deltaY > Configuration.maximumSize.y || deltaZ > Configuration.maximumSize.z) {
                 return;
             }
             ParticleRender.showBoxBorder(LiteWorldEdit.instance, player.getWorld().getName(), p1.x, p1.y, p1.z, p2.x, p2.y, p2.z);

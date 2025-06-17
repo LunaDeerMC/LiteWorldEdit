@@ -89,7 +89,7 @@ public class JobQueue {
             ms_last_pop = (int) System.currentTimeMillis();
         }
         bar.setTitle("§a§lLiteWorldEdit [正在运行] 剩余任务: " + queue.size() + " 预计剩余时间: " + time_m_remaining + "分" + time_s_remaining + "秒");
-        bar.setVisible(queue.size() != 0);
+        bar.setVisible(!queue.isEmpty());
     }
 
 }

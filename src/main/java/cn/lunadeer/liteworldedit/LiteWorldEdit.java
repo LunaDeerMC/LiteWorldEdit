@@ -1,11 +1,15 @@
 package cn.lunadeer.liteworldedit;
 
 import cn.lunadeer.liteworldedit.Managers.Cache;
-import cn.lunadeer.liteworldedit.Managers.ConfigManager;
+import cn.lunadeer.liteworldedit.utils.Notification;
+import cn.lunadeer.liteworldedit.utils.XLogger;
+import cn.lunadeer.liteworldedit.utils.bStatsMetrics;
+import cn.lunadeer.liteworldedit.utils.configuration.ConfigurationManager;
+import cn.lunadeer.liteworldedit.utils.scheduler.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Objects;
+import java.io.File;
 
 public final class LiteWorldEdit extends JavaPlugin {
 
@@ -13,32 +17,34 @@ public final class LiteWorldEdit extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
-        config = new ConfigManager();
-        _cache = new Cache();
+        new Notification(this);
+        new XLogger(this);
+        new Scheduler(this);
 
-        Bukkit.getPluginManager().registerEvents(new Events(), this);
-        Objects.requireNonNull(Bukkit.getPluginCommand("LiteWorldEdit")).setExecutor(new Commands());
-        Objects.requireNonNull(Bukkit.getPluginCommand("LiteWorldEdit")).setTabCompleter(new Commands());
-
-        Metrics metrics = new Metrics(this, 21436);
-        if (config.isCheckUpdate()) {
-            giteaReleaseCheck = new GiteaReleaseCheck(this,
-                    "https://ssl.lunadeer.cn:14446",
-                    "zhangyuheng",
-                    "LiteWorldEdit");
+        try {
+            ConfigurationManager.load(Configuration.class, new File(getDataFolder(), "config.yml"));
+        } catch (Exception e) {
+            XLogger.error(e);
         }
 
-        LoggerX.info("LiteWorldEdit 已加载");
-        LoggerX.info("版本: " + getPluginMeta().getVersion());
-        LoggerX.info("");
+        new Cache(this);
+        new Commands(this);
+
+        Bukkit.getPluginManager().registerEvents(new Events(), this);
+
+        bStatsMetrics metrics = new bStatsMetrics(this, 21436);
+
+        XLogger.info("LiteWorldEdit 已加载");
+        XLogger.info("版本: " + getPluginMeta().getVersion());
+        XLogger.info("");
         // https://patorjk.com/software/taag/#p=display&f=Big&t=LiteWorldEdit
-        LoggerX.info(" _      _ _    __          __        _     _ ______    _ _ _   ");
-        LoggerX.info("| |    (_) |   \\ \\        / /       | |   | |  ____|  | (_) |  ");
-        LoggerX.info("| |     _| |_ __\\ \\  /\\  / /__  _ __| | __| | |__   __| |_| |_ ");
-        LoggerX.info("| |    | | __/ _ \\\\/  \\/ / _ \\| '__| |/ _` |  __| / _` | | __|");
-        LoggerX.info("| |____| | ||  __/\\  /\\  / (_) | |  | | (_| | |___| (_| | | |_ ");
-        LoggerX.info("|______|_|\\__\\___| \\/  \\/ \\___/|_|  |_|\\__,_|______\\__,_|_|\\__|");
-        LoggerX.info("");
+        XLogger.info(" _      _ _    __          __        _     _ ______    _ _ _   ");
+        XLogger.info("| |    (_) |   \\ \\        / /       | |   | |  ____|  | (_) |  ");
+        XLogger.info("| |     _| |_ __\\ \\  /\\  / /__  _ __| | __| | |__   __| |_| |_ ");
+        XLogger.info("| |    | | __/ _ \\\\/  \\/ / _ \\| '__| |/ _` |  __| / _` | | __|");
+        XLogger.info("| |____| | ||  __/\\  /\\  / (_) | |  | | (_| | |___| (_| | | |_ ");
+        XLogger.info("|______|_|\\__\\___| \\/  \\/ \\___/|_|  |_|\\__,_|______\\__,_|_|\\__|");
+        XLogger.info("");
 
     }
 
@@ -47,16 +53,5 @@ public final class LiteWorldEdit extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public ConfigManager getConfigMgr() {
-        return config;
-    }
-
-    public Cache getCache() {
-        return _cache;
-    }
-
     public static LiteWorldEdit instance;
-    public static ConfigManager config;
-    private Cache _cache;
-    private GiteaReleaseCheck giteaReleaseCheck;
 }

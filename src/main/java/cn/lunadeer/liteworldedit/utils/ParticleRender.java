@@ -1,5 +1,6 @@
-package cn.lunadeer.liteworldedit;
+package cn.lunadeer.liteworldedit.utils;
 
+import cn.lunadeer.liteworldedit.LiteWorldEdit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;

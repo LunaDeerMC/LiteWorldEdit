@@ -1,4 +1,4 @@
-package cn.lunadeer.liteworldedit;
+package cn.lunadeer.liteworldedit.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPOutputStream;
 
-public class Metrics {
+public class bStatsMetrics {
     private final Plugin plugin;
 
     private final MetricsBase metricsBase;
@@ -35,7 +35,7 @@ public class Metrics {
      * @param serviceId The id of the service. It can be found at <a
      *                  href="https://bstats.org/what-is-my-plugin-id">What is my plugin id?</a>
      */
-    public Metrics(JavaPlugin plugin, int serviceId) {
+    public bStatsMetrics(JavaPlugin plugin, int serviceId) {
         this.plugin = plugin;
         // Get the config file
         File bStatsFolder = new File(plugin.getDataFolder().getParentFile(), "bStats");

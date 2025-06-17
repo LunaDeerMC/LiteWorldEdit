@@ -1,8 +1,11 @@
 package cn.lunadeer.liteworldedit.Jobs;
 
-import cn.lunadeer.liteworldedit.LiteWorldEdit;
-import cn.lunadeer.liteworldedit.LoggerX;
-import org.bukkit.*;
+import cn.lunadeer.liteworldedit.Configuration;
+import cn.lunadeer.liteworldedit.utils.XLogger;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -18,43 +21,40 @@ public class Remove extends Job {
     }
 
     @Override
-    public JobErrCode Do() {
-        Player _creator = this.get_creator();
-        Location _location = this.get_location();
-        World _world = this.get_world();
+    public JobErrCode execution() {
         // 超出距离
-        if (!in_range(_creator, _location)) {
-            LoggerX.debug("超出距离！");
+        if (notInRange(getCreator(), getLocation())) {
+            XLogger.debug("超出距离！");
             return JobErrCode.OUT_OF_RANGE;
         }
-        Block raw_block = _world.getBlockAt(_location);
+        Block raw_block = getWorld().getBlockAt(getLocation());
         // 跳过不破坏的对象
         if (raw_block.isLiquid() || raw_block.isEmpty() || raw_block.getType().getHardness() == -1) {
-            LoggerX.debug("目标方块是液体或空气或不可破坏！");
+            XLogger.debug("目标方块是液体或空气或不可破坏！");
             return JobErrCode.NO_BREAKABLE;
         }
         // 获取玩家背包中的下届合金镐
-        HashMap<Integer, ?> pickaxes = getNetherPickaxes(_creator);
+        HashMap<Integer, ?> pickaxes = getNetherPickaxes(getCreator());
         if (pickaxes.isEmpty()) {
             return JobErrCode.NO_PICKAXE;
         }
-        ItemStack pickaxe = getUsableNetherPickaxe(pickaxes, _creator);
+        ItemStack pickaxe = getUsableNetherPickaxe(pickaxes, getCreator());
         // 没有合适的镐
         if (pickaxe == null) {
             return JobErrCode.NOT_ENOUGH_DURATION;
         }
-        BlockBreakEvent event = new BlockBreakEvent(raw_block, _creator);
+        BlockBreakEvent event = new BlockBreakEvent(raw_block, getCreator());
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCancelled()) {
-            Collection<ItemStack> drops = raw_block.getDrops(pickaxe, _creator);
+            Collection<ItemStack> drops = raw_block.getDrops(pickaxe, getCreator());
             raw_block.setType(Material.AIR);
-            if (LiteWorldEdit.instance.getConfigMgr().isDropItems()) {
+            if (Configuration.dropItems) {
                 for (ItemStack drop : drops) {
                     raw_block.getWorld().dropItemNaturally(raw_block.getLocation(), drop);
                 }
             }
             // 损坏镐
-            if (!_creator.isOp() && _creator.getGameMode() != GameMode.CREATIVE) {
+            if (!getCreator().isOp() && getCreator().getGameMode() != GameMode.CREATIVE) {
                 useNetherPickaxe(pickaxe);
             }
             return JobErrCode.OK;

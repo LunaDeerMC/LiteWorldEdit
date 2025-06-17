@@ -1,16 +1,26 @@
 package cn.lunadeer.liteworldedit.Managers;
 
-import cn.lunadeer.liteworldedit.XPlayer;
+import cn.lunadeer.liteworldedit.LiteWorldEdit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Cache {
 
+    private static Cache instance;
+
+    public static Cache getInstance() {
+        if (instance == null) {
+            instance = new Cache(LiteWorldEdit.instance);
+        }
+        return instance;
+    }
+
     private final Map<String, XPlayer> players;
 
-    public Cache() {
+    public Cache(JavaPlugin plugin) {
         this.players = new HashMap<>();
     }
 

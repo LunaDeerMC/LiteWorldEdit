@@ -6,14 +6,14 @@
 
     <groupId>cn.lunadeer</groupId>
     <artifactId>LiteWorldEdit</artifactId>
-    <version>2.5.0.1</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <name>LiteWorldEdit</name>
 
-    <description>生存用简易创世神。</description>
+    <description>Lite World Edit for survival mode.</description>
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <url>https://ssl.lunadeer.cn:14448/project-2/</url>
@@ -75,6 +75,11 @@
             <artifactId>folia-api</artifactId>
             <version>1.20.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>4.4.0</version>
         </dependency>
     </dependencies>
 </project>
