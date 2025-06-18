@@ -27,7 +27,7 @@ jobs:
       - name: "Stage"
         run: |
           mkdir -p staging
-          mv target/CompassTeleport-*.jar staging/
+          mv target/LiteWorldEdit-*.jar staging/
       - name: "Build & test"
         run: |
           TAG=$(echo $GITHUB_REF | sed 's/refs\/tags\///')

@@ -1,6 +1,9 @@
-# 轻量创世神
-
-适用于生存服务器的轻量级创世神插件。
+<h1 align="center">LiteWorldEdit</h1>
+<p align="center">
+  <a href="https://mc.lunadeer.cn/amusing/LiteWorldEdit/" target="_blank">
+    <img src="https://img.shields.io/badge/文档-点击查看-blue?style=for-the-badge" alt="文档地址">
+  </a>
+</p>
 
 ## 说明
 
