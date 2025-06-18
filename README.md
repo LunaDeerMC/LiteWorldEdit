@@ -1,21 +1,10 @@
-
-<div style="text-align: center;">
-
-<img src="https://ssl.lunadeer.cn:14437/i/2024/03/28/6604dfebcffd8.png" alt="" width="70%">
-
-### [开源地址](https://ssl.lunadeer.cn:14446/zhangyuheng/LiteWorldEdit) | [文档地址](https://ssl.lunadeer.cn:14448/doc/3/)
-### [下载页面](https://ssl.lunadeer.cn:14446/zhangyuheng/LiteWorldEdit/releases)
-### [统计页面](https://bstats.org/plugin/bukkit/LiteWorldEdit/21436) | [Hangar](https://hangar.papermc.io/zhangyuheng/LiteWorldEdit)
-
-</div>
-
-## 轻量创世神
+# 轻量创世神
 
 适用于生存服务器的轻量级创世神插件。
 
 ## 说明
 
-这个插件也是很早之前在mcbbs见过一个类似的，但是后面找不到了，也不知道原作者是否有继续维护。
+本插件功能并非原创，灵感来自于Mcbbs的另一个插件，但是后面找不到了，也不知道原作者是否有继续维护。
 
 对于一些玩家来说平整区域、铺地板这样的重复性机械劳动是一件很痛苦的事。
 
@@ -44,88 +33,6 @@
 
 - 1.20.1+ (Folia、Paper)
 
-## 安装方法
-
-1. 将插件放入服务器# 标题的 `plugins` 目录下
-2. 重启服务器
-3. 在 `plugins/LiteWorldEdit/config.yml` 中配置
-4. 控制台或OP输入 `/lwe reload` 重载配置
-
-## 玩家使用方法
-
-### 1. 指令选区
-
-所有的操作均以**选区**为基础进行，因此需要先确定选区。而选区又是由点构成，因此需要先选点。
-根据小学知识，可以通过立方体对角线两点确定立方体。因此我们在进行选区操作前需要至少准备两个点。通过`/lwe point  [点序号(整数)] [x] [y] [z]`
-或者 `/lwe p  [点序号(整数)] [x] [y] [z]` 来选择空间中的点，点序号可以是任意想要的整数。
-
-### 2. 操作
-
-准备好点后即可使用对应的指令对点组成的选区进行具体的操作。如果不指定选点则默认使用 1 号 2 号点构成的区域。
-
-### 3. 快捷选区
-
-使用指令 `/lwe select` 打开快速选区模式，然后使用下届合金镐左键选择第一个点、右键选择第二个点，即可快速创建 1 号 2 号选点。
-
-![](https://ssl.lunadeer.cn:14437/i/2024/03/20/65fa94193f11a.gif)
-
-## 管理员指南
-
-### Multiplier
-
-默认为 1，表示每个玩家每 tick 操作1个方块，设置为 2 则表示每 tick 操作两个方块。根据服务器实际配置与玩家数量调整此配置。
-
-### DropItems
-
-默认为 false，如果开启则 `empty` 等清理方块的操作会像普通挖掘那样生成掉落物。建议不开启，避免滥用此功能挖矿或短时间内产生大量掉落物品造成服务器卡顿。
-
-## 指令
-
-以下指令尖括号`<>`表示必填参数，方括号`[]`表示可选参数。
-
-### 玩家指令
-
-| 指令                                 | 功能描述                      |
-|------------------------------------|---------------------------|
-| `/lwe help`                        | 查看帮助                      |
-| `/lwe point <点序号(整数)> <x> <y> <z>` | 创建点                       |
-| `/lwe p <点序号(整数)> <x> <y> <z>`     | 创建点                       |
-| `lwe select`                       | 开启/关闭选点模式 使用下届合金镐选择点      |
-| `/lwe points`                      | 查看当前添加的所有点                |
-| `/lwe fill [点序号A] [点序号B]`          | 在AB点对角线间放置方块 - 需要手持被放置的方块 |
-| `/lwe empty [点序号A] [点序号B]`         | 破坏AB点对角线间方块 - 需要拥有下届合金镐   |
-| `/lwe overlay [点序号A] [点序号B]`       | 在选区地面上铺一层方块 - 需要手持被放置的方块  |
-| `/lwe drain [点序号A] [点序号B]`         | 排干AB点对角线间的流体 - 需要背包里有一个海绵 |
-| `/lwe cancel`                      | 取消（终止）所有任务                |
-| `/lwe pause`                       | 暂停所有任务                    |
-| `/lwe resume`                      | 恢复所有任务                    |
-
-> 选区操作不填写点序号则默认使用 1 号 2 号点构成的区域。
-
-### 管理员指令
-
-| 指令            | 功能描述 |
-|---------------|------|
-| `/lwe reload` | 重载配置 |
-
-## 配置文件参考
-
-```yaml
-MaxX: 64
-
-MaxY: 64
-
-MaxZ: 64
-
-DropItems: false
-
-Multiplier: 1
-
-CheckUpdate: true
-
-Debug: false
-```
-
 ## TODO
 
 - [X] 从潜影盒中自动补充材料
@@ -135,12 +42,6 @@ Debug: false
 - [X] 可手动暂停、恢复任务
 
 - [ ] 更多的任务类型支持（如画圆、弧线）
-
-## 建议与反馈
-
-Mail: [zhangyuheng@lunadeer.cn](mailto:zhangyuheng@lunadeer.cn)
-
-QQ群：309428300
 
 ## 统计
 
