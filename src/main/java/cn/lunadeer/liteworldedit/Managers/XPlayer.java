@@ -23,7 +23,7 @@ public class XPlayer {
         this.points = new HashMap<>();
         this.queue = new JobQueue(player);
         Task task = new Task(this);
-        Scheduler.runTaskRepeatAsync(task, 1, 1);
+        Scheduler.runAtFixedRateEntity(player, task, 1);
     }
 
     public boolean isSelectMode() {

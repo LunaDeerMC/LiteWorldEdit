@@ -1,5 +1,7 @@
 package cn.lunadeer.liteworldedit.utils.scheduler;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.concurrent.TimeUnit;
@@ -116,6 +118,14 @@ public class Scheduler {
             return new PaperTask(instance.plugin.getServer().getAsyncScheduler().runAtFixedRate(instance.plugin, (plugin) -> task.run(), delay * 50, period * 50, TimeUnit.MILLISECONDS));
         } else {
             return new SpigotTask(instance.plugin.getServer().getScheduler().runTaskTimerAsynchronously(instance.plugin, task, delay, period));
+        }
+    }
+
+    public static CancellableTask runAtFixedRateEntity(Entity entity, Runnable runnable, int ticks) {
+        if (instance.isPaper) {
+            return new PaperTask(entity.getScheduler().runAtFixedRate(instance.plugin, (task) -> runnable.run(), null, ticks, ticks));
+        } else {
+            return new SpigotTask(Bukkit.getScheduler().runTaskTimer(instance.plugin, runnable, ticks, ticks));
         }
     }
 }
